@@ -1,0 +1,73 @@
+Build a **premium luxury limo service website** called “Aircorporate Limo Services” using **pure HTML, CSS, and JavaScript**. The website must:
+
+1. Run immediately on **localhost** and be ready for **custom domain hosting**.  
+2. Be fully responsive, mobile-first, and use **separate files**: index.html, style.css, script.js.  
+3. Use no frameworks or build tools—pure modern HTML/CSS/JS.  
+
+---
+
+### DESIGN & STYLE
+- **Colors:** Rich Black (#141414), Polished Gold (#D4AF37), Off-White (#F9F9F9)  
+- **Typography:** Playfair Display for headings, Montserrat for body  
+- Glassmorphism fixed navbar: black 80% opacity, 12px backdrop blur, 1px white 10% border  
+- Smooth scrolling and scroll-triggered content reveal  
+- Buttons: uppercase, wide letter-spacing, 300ms hover color swap  
+
+---
+
+### HERO SECTION
+- Full-screen slider with luxury car images (interiors/exteriors)  
+- Slow-scale animation: 0.5s, scale 1.1 → 1.0  
+- Headline: “Premium Black Car Service”  
+- Subtext: “Luxury Transportation in Boonton, NJ”  
+- Logo click scrolls to hero section  
+- Navbar includes a clickable **Call 📞** button
+
+---
+
+### PAGE STRUCTURE (STRICT ORDER)
+1. Hero  
+2. About Us: professional, executive paragraph highlighting reliability, punctuality, corporate level service  
+3. Services:
+   - Cards for Airport Transfers, Corporate Travel, Hourly Chauffeur  
+   - Include: 60 min airport wait, 15 min non-airport wait, free cancellation up to 2 hours  
+4. Booking Form  
+5. Fleet Section: Sedan (3 pax), SUV (6 pax), Van (12 pax)  
+6. Footer
+
+---
+
+### BOOKING FORM REQUIREMENTS
+- Fields: First Name, Last Name, Pickup (Google Places Autocomplete), Optional Stop, Drop (Google Places Autocomplete), Date & Time, Vehicle Type (Sedan, SUV, Van), Phone, Email  
+- Show dynamic **Google Maps** below the form with driving route automatically calculated  
+- Popup after submission:  
+  “Booking request submitted successfully! You will receive a call or an email soon.”  
+- Submit must **POST FormData** to **Google Apps Script URL**:  
+`https://script.google.com/macros/s/AKfycbxaVKvqeWb4UEkj09G1mWOf-QHOjQ7CEqzUG9yZxLIquWH6OmbfI2DNydXumK4pNuRH/exec`  
+- Input `name` attributes must exactly match Apps Script keys: firstName, lastName, email, phone, pickup, dropoff, dateTime, vehicleType  
+
+---
+
+### FLEET SECTION
+- Show three vehicles with passenger capacity  
+- Minimalist luxury cards with subtle shadows  
+- Placeholder images that can be replaced later  
+
+---
+
+### TECHNICAL REQUIREMENTS
+- Google Maps API with Places and Directions service  
+- All API keys and URLs properly commented in code  
+- Clean, production-ready HTML/CSS/JS  
+- Fully functional on localhost and ready for deployment on domain  
+- Popup, dynamic map, Google Sheets, and email notification fully integrated  
+
+---
+
+**Final Goal:** Generate a **luxury executive limo website** that:  
+- Looks premium and professional  
+- Runs locally and on any domain  
+- Fully functional booking form sending data to Google Sheets and email  
+- Includes dynamic map, fleet, About & Services, and proper popup  
+- Hero animation scale 1.1 → 1.0 in 0.5s  
+- Section order correct with Booking after About & Services
