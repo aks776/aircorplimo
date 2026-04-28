@@ -1,41 +1,56 @@
 import { useMutation } from "@tanstack/react-query";
-import { type InsertBooking } from "@shared/schema";
-import { api } from "@shared/routes";
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaVKvqeWb4UEkj09G1mWOf-QHOjQ7CEqzUG9yZxLIquWH6OmbfI2DNydXumK4pNuRH/exec";
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycby5LHyJtMQhsOJn8mznYv8jq4_Hb2RfxXrhIllQcHOhfGfQQLYtCIXHgf3ytGrGW00/exec";
+
+export type BookingData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  pickup: string;
+  dropoff: string;
+  stops?: string[]; // multiple stops
+  dateTime: string;
+  vehicleType: string;
+  message?: string;
+};
 
 export function useSubmitBooking() {
   return useMutation({
-    mutationFn: async (data: InsertBooking) => {
-      // 1. Submit to local API as a reliable backup
-      try {
-        await fetch(api.bookings.create.path, {
-          method: api.bookings.create.method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-      } catch (e) {
-        console.error("Local booking backup failed, proceeding with Google Script...", e);
+    mutationFn: async (data: BookingData) => {
+      // Basic validation (except stops)
+      for (const [key, value] of Object.entries(data)) {
+        if (key !== "stops" && (!value || (typeof value === "string" && value.trim() === ""))) {
+          throw new Error(`Field "${key}" is required.`);
+        }
       }
 
-      // 2. Submit to Google Apps Script (Standard Form submission)
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        formData.append(key, value ? String(value) : '');
+      // Prepare payload: keep stops as array
+      const payload = {
+        ...data,
+        stops: data.stops ? data.stops.filter(s => s.trim() !== "") : [],
+      };
+
+      // Send to Google Apps Script
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
       });
 
-      // We use no-cors because the Google Script lives on a different origin
-      // and doesn't explicitly allow our frontend's origin via CORS headers
-      // It will still execute the POST on Google's end.
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      });
+      if (!response.ok) {
+        const text = await response.text();
+        console.error("Server response:", text);
+        throw new Error("Booking submission failed");
+      }
 
-      // Because of no-cors, we can't parse the response, so we assume success
-      // if the network request didn't throw an error.
-      return true;
-    }
+      // Parse response safely
+      const text = await response.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        return { status: "success", raw: text };
+      }
+    },
   });
 }
